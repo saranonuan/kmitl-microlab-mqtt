@@ -13,14 +13,18 @@
     <script>
         // Create a client instance
         var client = new Paho.MQTT.Client("gis.it.kmitl.ac.th", 3000, "CLIENT_ID");
+
         client.connect({
             onSuccess: function onConnect() {
                 client.subscribe("TEST_CHANNEL");
             }
         });
+
+        // called when a message arrives
         client.onMessageArrived = function(message) {
             document.getElementById("analog_value").innerHTML = message.payloadString;
         };
+
         document.getElementById("input_value").onchange = function(event){
             var value = event.target.value;
             // Show current Value
