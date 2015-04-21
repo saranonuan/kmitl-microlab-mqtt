@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>MQTT Client Library</title>
+</head>
+<body>
+    Value : <input id="input_value" type="range" min="0" max="255" value="0" /> | Current Value : <span id="current_value">0</span>
+    <hr>
+    <p>ANALOG VALUE : <span id="analog_value">0</span></p>
+
+    <script src="./lib/mqttws31.js"></script>
+    <script>
+        // Create a client instance
+        var client = new Paho.MQTT.Client("gis.it.kmitl.ac.th", 3000, "CLIENT_ID");
+        client.connect({
+            onSuccess: function onConnect() {
+                client.subscribe("TEST_CHANNEL");
+            }
+        });
+        client.onMessageArrived = function(message) {
+            document.getElementById("analog_value").innerHTML = message.payloadString;
+        };
+        document.getElementById("input_value").onchange = function(event){
+            var value = event.target.value;
+            // Show current Value
+            document.getElementById("current_value").innerHTML = value;
+            // Send current Value to Channel
+            client.send("TEST_CHANNEL", value);
+        };
+    </script>
+</body>
+</html>
