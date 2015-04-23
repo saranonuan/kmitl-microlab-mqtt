@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>MQTT Client Library</title>
+</head>
+<body>
+<div id="logs-topic-1"></div>
+<div id="logs-topic-2"></div>
+
+<script src="./lib/mqttws31.js"></script>
+<script>
+    // Create a client instance
+    var client = new Paho.MQTT.Client("gis.it.kmitl.ac.th", 3000, "CLIENT_ID");
+
+    client.connect({
+        onSuccess: function onConnect() {
+            client.subscribe("TEST-TOPIC 1");
+            client.subscribe("TEST-TOPIC 2");
+        }
+    });
+
+    // called when a message arrives
+    client.onMessageArrived = function(message) {
+        console.log(message.destinationName, message.payloadString);
+
+        if(message.destinationName == "TEST-TOPIC 1"){
+            document.getElementById('logs-topic-1').innerHTML =
+                    '<li>'+message.destinationName+' >> '+ message.payloadString +'</li>';
+        }else if(message.destinationName == "TEST-TOPIC 2"){
+            document.getElementById('logs-topic-2').innerHTML =
+                    '<li>'+message.destinationName+' >> '+ message.payloadString +'</li>';
+        }
+    };
+</script>
+</body>
+</html>
